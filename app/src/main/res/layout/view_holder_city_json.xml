@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="item"
+            type="hf.dra.anotherweatherapp.model.CityJson" />
+        <variable
+            name="viewHolder"
+            type="hf.dra.anotherweatherapp.adapters.CityJsonViewHolder" />
+    </data>
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:gravity="center_horizontal"
+        android:onClick="@{viewHolder::onClickItem}"
+        android:layout_margin="@dimen/small_margins"
+        android:layout_height="wrap_content">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="City name"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginEnd="@dimen/small_margins"
+            android:textSize="@dimen/medium_text"
+            android:text="@{item.name}"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            tools:text="country"
+            android:textSize="@dimen/small_text"
+            android:layout_gravity="bottom"
+            android:text="@{item.getCountryText}"/>
+    </LinearLayout>
+</layout>
