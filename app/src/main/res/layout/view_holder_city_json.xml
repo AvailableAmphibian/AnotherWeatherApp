@@ -22,13 +22,13 @@
             tools:text="City name"
             android:layout_gravity="center_horizontal"
             android:layout_marginEnd="@dimen/small_margins"
-            android:textSize="@dimen/medium_text"
+            android:textSize="@dimen/big_text"
             android:text="@{item.name}"/>
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="country"
-            android:textSize="@dimen/small_text"
+            android:textSize="@dimen/medium_text"
             android:layout_gravity="bottom"
             android:text="@{item.getCountryText}"/>
     </LinearLayout>

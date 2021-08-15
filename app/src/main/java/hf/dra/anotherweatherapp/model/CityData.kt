@@ -3,6 +3,7 @@ package hf.dra.anotherweatherapp.model
 import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
+import hf.dra.anotherweatherapp.countryAsEmoji
 import hf.dra.anotherweatherapp.room.entities.CityDataRelationships
 
 @Entity
@@ -27,4 +28,17 @@ data class CityData(
     fun toEntity(): CityDataRelationships {
         return CityDataRelationships(this)
     }
+
+    val firstWeather: Weather
+        get() = weather?.get(0)!!
+
+    val country: String
+        get() = countryAsEmoji(sys?.country ?: "")
+
+    val temp get() = main!!.temp
+    val feelsLike get() = main!!.feels_like
+    val minTemp get() = main!!.temp_min
+    val maxTemp get() = main!!.temp_max
+
+
 }

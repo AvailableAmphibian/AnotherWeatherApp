@@ -1,24 +1,95 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
     <data>
+
         <variable
             name="data"
             type="hf.dra.anotherweatherapp.model.CityData" />
+
         <variable
             name="fragment"
             type="hf.dra.anotherweatherapp.fragments.CityFragment" />
     </data>
-    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools"
+
+    <androidx.constraintlayout.widget.ConstraintLayout xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".fragments.CityFragment">
 
-        <!-- TODO: Update blank fragment layout -->
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:text="@{data.toString()}" />
+            android:id="@+id/tv_data_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:text="@{data.name}"
+            android:textSize="@dimen/really_big_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="data.name" />
 
-    </LinearLayout>
+        <TextView
+            android:id="@+id/tv_data_country"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margins"
+            android:text="@{data.country}"
+            android:textSize="@dimen/big_text"
+            app:layout_constraintBottom_toBottomOf="@id/tv_data_name"
+            app:layout_constraintStart_toEndOf="@id/tv_data_name"
+            tools:text="flag" />
+
+        <CheckBox
+            android:id="@+id/btn_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:background="@android:color/transparent"
+            android:button="@android:drawable/btn_star"
+            android:contentDescription="@string/favorite_button"
+            android:text="@string/favorite"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/tv_data_name" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_weather"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_percent="0.6" />
+
+        <ImageView
+            android:id="@+id/iv_weather_icon"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:contentDescription="@{data.firstWeather.main}"
+            android:src="@{fragment.firstIcon}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@drawable/_10d" />
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:gravity="end"
+            android:text="@{data.firstWeather.description}"
+
+            android:textSize="@dimen/small_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_weather"
+            app:layout_constraintTop_toBottomOf="@id/iv_weather_icon"
+            tools:text="heavy shower rain and drizzle" />
+        
+        <TextView
+            app:layout_constraintTop_toBottomOf="@id/btn_favorite"
+            app:layout_constraintStart_toEndOf="@id/btn_favorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/gigantic_text"
+            android:text="@{fragment.temp}"
+            tools:text="20°C"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

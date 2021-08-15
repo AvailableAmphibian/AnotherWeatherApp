@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <dimen name="small_margins">8dp</dimen>
-    <dimen name="medium_text">20sp</dimen>
-    <dimen name="small_text">18sp</dimen>
+    <dimen name="medium_margins">12dp</dimen>
+
+    <dimen name="small_text">14sp</dimen>
+    <dimen name="medium_text">18sp</dimen>
+    <dimen name="big_text">22sp</dimen>
+    <dimen name="really_big_text">26sp</dimen>
+    <dimen name="gigantic_text">58sp</dimen>
 </resources>
