@@ -7,5 +7,9 @@ import androidx.room.OnConflictStrategy
 
 @Dao
 interface BaseDao<T> {
+    @Insert
+    fun insert(t:T)
 
+    @Delete
+    fun delete(t:T)
 }
