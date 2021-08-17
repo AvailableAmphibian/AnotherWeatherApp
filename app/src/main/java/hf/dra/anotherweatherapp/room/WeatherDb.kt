@@ -5,13 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import hf.dra.anotherweatherapp.model.*
-import hf.dra.anotherweatherapp.room.dao.CityDao
-import hf.dra.anotherweatherapp.room.dao.MainDataDao
-import hf.dra.anotherweatherapp.room.dao.WeatherDao
-import hf.dra.anotherweatherapp.room.dao.WindDao
-import hf.dra.anotherweatherapp.room.entities.CityDataRelationships
 
-@Database(entities = [CityData::class,MainData::class, Sys::class, Weather::class, Wind::class], version = 1)
+@Database(entities = [CityData::class], version = 1, exportSchema = false)
 abstract class WeatherDb : RoomDatabase() {
     companion object {
         private lateinit var instance: WeatherDb
@@ -28,9 +23,5 @@ abstract class WeatherDb : RoomDatabase() {
         }
     }
 
-    abstract fun cityDao():CityDao
-
-    abstract fun mainDataDao():MainDataDao
-    abstract fun weatherDao():WeatherDao
-    abstract fun windDao():WindDao
+    abstract fun cityDao(): CityDao
 }

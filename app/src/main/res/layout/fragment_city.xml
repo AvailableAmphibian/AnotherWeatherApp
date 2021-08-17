@@ -76,20 +76,33 @@
             android:layout_margin="@dimen/medium_margins"
             android:gravity="end"
             android:text="@{data.firstWeather.description}"
-
             android:textSize="@dimen/small_text"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/guideline_weather"
             app:layout_constraintTop_toBottomOf="@id/iv_weather_icon"
             tools:text="heavy shower rain and drizzle" />
-        
+
+        <!-- Not in strings.xml cuz' no translation needed -->
         <TextView
-            app:layout_constraintTop_toBottomOf="@id/btn_favorite"
-            app:layout_constraintStart_toEndOf="@id/btn_favorite"
+            android:id="@+id/tv_temp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="@dimen/gigantic_text"
             android:text="@{fragment.temp}"
-            tools:text="20°C"/>
+            android:textSize="@dimen/gigantic_text"
+            app:layout_constraintStart_toEndOf="@id/btn_favorite"
+            app:layout_constraintTop_toBottomOf="@id/btn_favorite"
+            tools:text="20°C" />
+
+        <!-- Not in strings.xml cuz' no translation needed -->
+        <TextView
+            android:id="@+id/tv_feels_like"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_margins"
+            android:text="@{fragment.feelsLike}"
+            android:textSize="@dimen/medium_text"
+            app:layout_constraintStart_toStartOf="@id/tv_temp"
+            app:layout_constraintTop_toBottomOf="@id/tv_temp"
+            tools:text="Feels like : 21°C" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

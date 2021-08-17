@@ -3,11 +3,11 @@ package hf.dra.anotherweatherapp.adapters
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import hf.dra.anotherweatherapp.databinding.ViewHolderCityJsonBinding
-import hf.dra.anotherweatherapp.listeners.SearchListener
+import hf.dra.anotherweatherapp.listeners.OnClickSearch
 import hf.dra.anotherweatherapp.model.CityJson
 
 class CityJsonViewHolder(
-    private val listener: SearchListener,
+    private val onClick: OnClickSearch,
     private val binding: ViewHolderCityJsonBinding
 ) :
     RecyclerView.ViewHolder(binding.root) {
@@ -19,7 +19,7 @@ class CityJsonViewHolder(
         binding.viewHolder = this
     }
 
-    fun onClickItem(v: View){
-        listener.onClickSearch(this.item)
+    fun View.onClickItem() {
+        onClick.onClickSearch(this@CityJsonViewHolder.item)
     }
 }

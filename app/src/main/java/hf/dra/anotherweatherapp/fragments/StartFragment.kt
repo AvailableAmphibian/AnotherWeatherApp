@@ -36,4 +36,9 @@ class StartFragment : Fragment() {
         super.onResume()
         findNavController().navigate(R.id.action_startFragment_to_searchFragment2)
     }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
 }

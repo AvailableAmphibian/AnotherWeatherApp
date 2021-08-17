@@ -34,9 +34,7 @@ class CityFragment : Fragment() {
         // Inflate the layout for this fragment
         _binding = FragmentCityBinding.inflate(inflater, container, false)
 
-        viewModel.selected.observe(viewLifecycleOwner, {
-            binding.data = it
-        })
+        viewModel.selected.observe(viewLifecycleOwner, { binding.data = it })
 
         binding.fragment = this
 
@@ -50,12 +48,13 @@ class CityFragment : Fragment() {
 
     //Fragment construction needing context
     val temp get() = getTemperature(data.temp)
-    val feelsLike get() = getTemperature(data.feelsLike)
-    val maxTemp get() = getTemperature(data.maxTemp)
-    val minTemp get() = getTemperature(data.minTemp)
+    val feelsLike get() = "Feels like : ${getTemperature(data.feelsLike)}"
 
     private fun getTemperature(temp: Float): String {
-        val pref = Units.getValueOf(PreferenceManager.getDefaultSharedPreferences(mainActivity).getString("Unit","Standard")!!)
+        val pref = Units.getValueOf(
+            PreferenceManager.getDefaultSharedPreferences(mainActivity)
+                .getString("Unit", "Standard")!!
+        )
         val degrees = temp.roundToInt()
         return "$degrees${pref.degree}"
     }

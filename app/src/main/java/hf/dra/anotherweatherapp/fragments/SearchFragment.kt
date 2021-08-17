@@ -2,7 +2,6 @@ package hf.dra.anotherweatherapp.fragments
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,7 +14,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import hf.dra.anotherweatherapp.R
 import hf.dra.anotherweatherapp.adapters.CityJsonAdapter
 import hf.dra.anotherweatherapp.databinding.FragmentSearchBinding
-import hf.dra.anotherweatherapp.listeners.SearchListener
 import hf.dra.anotherweatherapp.model.CityData
 import hf.dra.anotherweatherapp.model.CityJson
 import hf.dra.anotherweatherapp.room.WeatherDb
@@ -27,14 +25,14 @@ import retrofit2.Callback
 import retrofit2.Response
 import kotlin.streams.toList
 
-class SearchFragment : Fragment(), SearchListener {
+class SearchFragment : Fragment() /*,SearchListener*/ {
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
 
     private val viewModel: CityViewModel by activityViewModels()
     private val listViewModel: CityListViewModel by activityViewModels()
 
-    private lateinit var displayedCities:ArrayList<CityJson>
+    private lateinit var displayedCities: ArrayList<CityJson>
     private lateinit var adapter: CityJsonAdapter
 
     override fun onCreateView(
@@ -48,7 +46,7 @@ class SearchFragment : Fragment(), SearchListener {
 
         //Rv handling
         displayedCities = ArrayList(listViewModel.cityList)
-        adapter = CityJsonAdapter(displayedCities, this, requireContext())
+        adapter = CityJsonAdapter(displayedCities, requireContext(), ::fetchCity)
 
         binding.citiesRv.apply {
             adapter = this@SearchFragment.adapter
@@ -72,26 +70,23 @@ class SearchFragment : Fragment(), SearchListener {
         _binding = null
     }
 
-    override fun onClickSearch(item: CityJson) {
-        fetchCity(item)
-    }
-
     private fun fetchCity(item: CityJson) {
-        RetrofitInstance.OPEN_WEATHER.getByCityId(cityId = item.id).enqueue(object :
-            Callback<CityData> {
-            override fun onResponse(call: Call<CityData>, response: Response<CityData>) {
-                Log.i("SearchFragment", "onResponse: ${response.body()}")
-                viewModel.selected.value = response.body() ?: fetchFromDb(item)
-                findNavController().navigate(R.id.action_searchFragment_to_cityFragment)
-            }
+        RetrofitInstance.OPEN_WEATHER.getByCityId(cityId = item.id, units = "metric")
+            .enqueue(object :
+                Callback<CityData> {
+                override fun onResponse(call: Call<CityData>, response: Response<CityData>) {
+                    viewModel.selected.value =
+                        response.body()?.apply { weather = firstWeather } ?: fetchFromDb(item)
 
-            override fun onFailure(call: Call<CityData>, t: Throwable) {
-                Log.e("Fetcher", "onFailure: ", t)
-                viewModel.selected.value = fetchFromDb(item)
-                findNavController().navigate(R.id.action_searchFragment_to_cityFragment)
-            }
+                    findNavController().navigate(R.id.action_searchFragment_to_cityFragment)
+                }
 
-        })
+                override fun onFailure(call: Call<CityData>, t: Throwable) {
+                    viewModel.selected.value = fetchFromDb(item)
+                    findNavController().navigate(R.id.action_searchFragment_to_cityFragment)
+                }
+
+            })
     }
 
     @SuppressLint("NotifyDataSetChanged")
@@ -105,7 +100,7 @@ class SearchFragment : Fragment(), SearchListener {
     }
 
     private fun fetchFromDb(item: CityJson): CityData {
-        return WeatherDb.getInstance().cityDao().getCityById(item.id)!!.toCityData()
+        return WeatherDb.getInstance().cityDao().getCityById(item.id)!!
     }
 }
 

@@ -1,9 +1,5 @@
 package hf.dra.anotherweatherapp
 
-import androidx.preference.PreferenceScreen
-import hf.dra.anotherweatherapp.fragments.SettingsFragment
-import hf.dra.anotherweatherapp.model.Units
-
 const val OPEN_WEATHER_URL = "https://api.openweathermap.org/data/2.5/"
 const val API_KEY = "7c0e64bf3a94387b34f0ca323fc8431e"
 
