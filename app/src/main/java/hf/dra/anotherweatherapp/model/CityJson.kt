@@ -11,5 +11,4 @@ data class CityJson(
 ) {
     val countryText: String
         get() = if (state == "") countryAsEmoji(country) else "${countryAsEmoji(country)}, $state"
-
 }

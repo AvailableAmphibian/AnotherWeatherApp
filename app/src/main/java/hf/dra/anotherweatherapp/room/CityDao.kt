@@ -6,17 +6,20 @@ import hf.dra.anotherweatherapp.model.CityData
 @Dao
 interface CityDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(cityData: CityData)
+    suspend fun insert(cityData: CityData)
 
     @Delete
-    fun delete(cityData: CityData)
+    suspend fun delete(cityData: CityData)
 
     @Transaction
-    fun deleteById(id: Int){
-        val city = getCityById(id)?:return
+    suspend fun deleteById(id: Int) {
+        val city = getCityById(id) ?: return
         delete(city)
     }
 
     @Query("Select * from cityData where id = :id limit 1")
-    fun getCityById(id: Int): CityData?
+    suspend fun getCityById(id: Int): CityData?
+
+    @Query("Select * from cityData where favorite = 1")
+    suspend fun getAllFavoriteCities(): List<CityData>
 }

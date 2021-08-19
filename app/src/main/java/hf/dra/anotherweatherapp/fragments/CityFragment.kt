@@ -1,5 +1,6 @@
 package hf.dra.anotherweatherapp.fragments
 
+import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -27,6 +28,7 @@ class CityFragment : Fragment() {
     private val mainActivity get() = requireActivity() as MainActivity
     private val data get() = binding.data!!
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -37,6 +39,9 @@ class CityFragment : Fragment() {
         viewModel.selected.observe(viewLifecycleOwner, { binding.data = it })
 
         binding.fragment = this
+
+        //Disable SeekBar
+        binding.sbarSunState.setOnTouchListener { _, _ -> true }
 
         return binding.root
     }
@@ -50,18 +55,29 @@ class CityFragment : Fragment() {
     val temp get() = getTemperature(data.temp)
     val feelsLike get() = "Feels like : ${getTemperature(data.feelsLike)}"
 
-    private fun getTemperature(temp: Float): String {
-        val pref = Units.getValueOf(
+    val windSpeed get() = "Speed : ${data.windSpeed} ${units.speed}"
+    val windGust get() = "Gust : ${data.windGust} ${units.speed}"
+
+
+    val windVisibility: Int
+        get() = if (PreferenceManager.getDefaultSharedPreferences(mainActivity)
+                .getBoolean("Wind", true)
+        ) View.VISIBLE else View.GONE
+
+    private val units
+        get() = Units.getValueOf(
             PreferenceManager.getDefaultSharedPreferences(mainActivity)
                 .getString("Unit", "Standard")!!
         )
+
+    private fun getTemperature(temp: Float): String {
         val degrees = temp.roundToInt()
-        return "$degrees${pref.degree}"
+        return "$degrees${units.degree}"
     }
 
     val firstIcon: Drawable?
         get() = ContextCompat.getDrawable(
-            requireContext(), when (data.firstWeather.icon) {
+            mainActivity, when (data.firstWeather.icon) {
                 //ClearSky
                 "01d" -> R.drawable._01d
                 "01n" -> R.drawable._01n
@@ -101,4 +117,13 @@ class CityFragment : Fragment() {
                 else -> 0
             }
         )
+
+    fun View.onClickFavorite() {
+        data.favorite = !data.favorite
+        if (data.favorite)
+            viewModel.insertData()
+        else
+            viewModel.deleteData()
+    }
+
 }

@@ -4,6 +4,8 @@
 
     <data>
 
+        <import type="android.view.View" />
+
         <variable
             name="data"
             type="hf.dra.anotherweatherapp.model.CityData" />
@@ -47,7 +49,9 @@
             android:layout_margin="@dimen/medium_margins"
             android:background="@android:color/transparent"
             android:button="@android:drawable/btn_star"
+            android:checked="@{data.favorite}"
             android:contentDescription="@string/favorite_button"
+            android:onClick="@{fragment::onClickFavorite}"
             android:text="@string/favorite"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/tv_data_name" />
@@ -71,6 +75,7 @@
             tools:src="@drawable/_10d" />
 
         <TextView
+            android:id="@+id/tv_weather_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/medium_margins"
@@ -81,6 +86,19 @@
             app:layout_constraintStart_toEndOf="@id/guideline_weather"
             app:layout_constraintTop_toBottomOf="@id/iv_weather_icon"
             tools:text="heavy shower rain and drizzle" />
+
+        <TextView
+            android:id="@+id/tv_humidity"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:gravity="end"
+            android:text="@{data.humidity}"
+            android:textSize="@dimen/small_text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/guideline_weather"
+            app:layout_constraintTop_toBottomOf="@id/tv_weather_description"
+            tools:text="Humidity : 44%" />
 
         <!-- Not in strings.xml cuz' no translation needed -->
         <TextView
@@ -104,5 +122,159 @@
             app:layout_constraintStart_toStartOf="@id/tv_temp"
             app:layout_constraintTop_toBottomOf="@id/tv_temp"
             tools:text="Feels like : 21°C" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_not_needed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tv_feels_like" />
+
+        <TextView
+            android:id="@+id/tv_precipitation_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:text="@{data.precipitationName}"
+            android:textSize="@dimen/big_text"
+            android:visibility="@{data.precipitation != null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_not_needed"
+            tools:text="Rain" />
+
+        <TextView
+            android:id="@+id/tv_precipitation_last"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margins"
+            android:text="@{data.lastHour}"
+            android:textSize="@dimen/medium_text"
+            android:visibility="@{data.precipitation != null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="@+id/tv_precipitation_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_precipitation_title"
+            tools:text="Last hour : 12 mm" />
+
+        <TextView
+            android:id="@+id/tv_precipitation_last_three"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margins"
+            android:text="@{data.lastThreeHours}"
+            android:textSize="@dimen/medium_text"
+            android:visibility="@{data.precipitation != null ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toStartOf="@+id/tv_precipitation_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_precipitation_last"
+            tools:text="Last 3 hours : 13 mm" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_wind"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="tv_precipitation_last, tv_precipitation_title, tv_precipitation_last_three" />
+
+        <TextView
+            android:id="@+id/tv_wind_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:text="@string/wind_data"
+            android:textSize="@dimen/big_text"
+            android:visibility="@{fragment.windVisibility}"
+            app:layout_constraintStart_toStartOf="@id/barrier_wind"
+            app:layout_constraintTop_toBottomOf="@id/barrier_not_needed"
+            tools:text="Wind" />
+
+        <TextView
+            android:id="@+id/tv_wind_speed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margins"
+            android:text="@{fragment.windSpeed}"
+            android:textSize="@dimen/medium_text"
+            android:visibility="@{fragment.windVisibility}"
+            app:layout_constraintStart_toStartOf="@id/tv_wind_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_wind_title"
+            tools:text="Speed : 90.0 m/s" />
+
+        <TextView
+            android:id="@+id/tv_wind_degree"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margins"
+            android:text="@{data.windDegree}"
+            android:textSize="@dimen/medium_text"
+            android:visibility="@{fragment.windVisibility}"
+            app:layout_constraintStart_toStartOf="@id/tv_wind_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_wind_speed"
+            tools:text="Direction : 56°" />
+
+        <TextView
+            android:id="@+id/tv_wind_gust"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/small_margins"
+            android:text="@{fragment.windGust}"
+            android:textSize="@dimen/medium_text"
+            android:visibility="@{fragment.windVisibility}"
+            app:layout_constraintStart_toStartOf="@id/tv_wind_title"
+            app:layout_constraintTop_toBottomOf="@id/tv_wind_degree"
+            tools:text="Gust : 3 m/s" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier_sun_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="tv_wind_gust, tv_precipitation_last_three" />
+
+        <TextView
+            android:id="@+id/tv_sun_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/medium_margins"
+            android:text="@string/sunrise_amp_sunset"
+            android:textSize="@dimen/big_text"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/barrier_sun_data" />
+
+        <androidx.appcompat.widget.AppCompatSeekBar
+            android:id="@+id/sbar_sun_state"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/small_margins"
+            android:layout_marginEnd="@dimen/small_margins"
+            android:progress="@{data.progress}"
+            app:layout_constraintTop_toBottomOf="@id/tv_sun_title" />
+
+        <TextView
+            android:id="@+id/tv_sunrise"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{data.sunrise}"
+            android:textSize="@dimen/medium_text"
+            app:layout_constraintStart_toStartOf="@id/sbar_sun_state"
+            app:layout_constraintTop_toBottomOf="@id/sbar_sun_state"
+            tools:text="06:16am" />
+
+        <TextView
+            android:id="@+id/tv_sunset"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{data.sunset}"
+            android:textSize="@dimen/medium_text"
+            app:layout_constraintEnd_toEndOf="@id/sbar_sun_state"
+            app:layout_constraintTop_toBottomOf="@id/sbar_sun_state"
+            tools:text="06:16pm" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{data.readableLastFetched}"
+            tools:text="Last fetched : 2021-04-20 @ 06:45"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_margin="@dimen/small_margins"
+            android:textSize="@dimen/small_text"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

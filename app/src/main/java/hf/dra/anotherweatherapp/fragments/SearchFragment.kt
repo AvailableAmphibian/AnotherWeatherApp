@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.widget.doOnTextChanged
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -20,6 +21,7 @@ import hf.dra.anotherweatherapp.room.WeatherDb
 import hf.dra.anotherweatherapp.service.RetrofitInstance
 import hf.dra.anotherweatherapp.view_models.CityListViewModel
 import hf.dra.anotherweatherapp.view_models.CityViewModel
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -30,6 +32,7 @@ class SearchFragment : Fragment() /*,SearchListener*/ {
     private val binding get() = _binding!!
 
     private val viewModel: CityViewModel by activityViewModels()
+    private val value get() = viewModel.selected.value!!
     private val listViewModel: CityListViewModel by activityViewModels()
 
     private lateinit var displayedCities: ArrayList<CityJson>
@@ -75,14 +78,21 @@ class SearchFragment : Fragment() /*,SearchListener*/ {
             .enqueue(object :
                 Callback<CityData> {
                 override fun onResponse(call: Call<CityData>, response: Response<CityData>) {
-                    viewModel.selected.value =
-                        response.body()?.apply { weather = firstWeather } ?: fetchFromDb(item)
-
+                    viewModel.viewModelScope.launch {
+                        if (response.body() != null) {
+                            viewModel.selected.value = response.body()!!.apply {
+                                weather = firstWeather; lastFetched = System.currentTimeMillis()
+                            }
+                            viewModel.verifyIfInDb()
+                        } else
+                            viewModel.selected.value = fetchFromDb(item)
+                    }
                     findNavController().navigate(R.id.action_searchFragment_to_cityFragment)
+
                 }
 
                 override fun onFailure(call: Call<CityData>, t: Throwable) {
-                    viewModel.selected.value = fetchFromDb(item)
+                    viewModel.viewModelScope.launch { viewModel.selected.value = fetchFromDb(item) }
                     findNavController().navigate(R.id.action_searchFragment_to_cityFragment)
                 }
 
@@ -93,13 +103,13 @@ class SearchFragment : Fragment() /*,SearchListener*/ {
     private fun changeList(text: CharSequence) {
         displayedCities.clear()
         displayedCities.addAll(listViewModel.cityList.stream()
-            .filter { it.name.startsWith(text.toString(), ignoreCase = true) }
+            .filter { it.name.contains(text.toString(), ignoreCase = true) }
             .toList())
 
         adapter.notifyDataSetChanged()
     }
 
-    private fun fetchFromDb(item: CityJson): CityData {
+    private suspend fun fetchFromDb(item: CityJson): CityData {
         return WeatherDb.getInstance().cityDao().getCityById(item.id)!!
     }
 }
